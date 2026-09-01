@@ -15,7 +15,7 @@
   <script>
   (async()=>{
     try{
-      const version='20260901-r3';
+      const version='20260901-r4';
       const [appRes,cloudRes]=await Promise.all([
         fetch('./app.html?v='+version,{cache:'no-store'}),
         fetch('./xihunji-cloud.js?v='+version,{cache:'no-store'})
@@ -24,15 +24,18 @@
       if(!cloudRes.ok)throw Error('xihunji-cloud.js '+cloudRes.status);
 
       let h=await appRes.text();
-      let cloud=await cloudRes.text();
+      const cloud=await cloudRes.text();
 
-      // Shared invitation links must be validated by Supabase, not localStorage.
-      h=h.replace(/renderNav\(\);\s*bootInvitationRoute\(\);\s*<\/script>/,'renderNav();\n</script>');
+      // Disable the old localStorage-only guest-route boot.
+      h=h.replace('renderNav();\nbootInvitationRoute();','renderNav();');
+      h=h.replace('renderNav();\r\nbootInvitationRoute();','renderNav();');
 
-      // Inline the cloud bridge so browser/cache/script-order issues cannot skip it.
-      cloud=cloud.replace(/<\/script/gi,'<\\/script');
-      const bridge='<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\\/script>'+
-        '<script>window.__XHJ_CLOUD_BUILD="'+version+'";'+cloud+'<\\/script>';
+      // Build script tags in pieces so the loader source itself never contains
+      // a literal closing-script sequence that could terminate this script early.
+      const closeScript='</scr'+'ipt>';
+      const supabaseTag='<scr'+'ipt src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">'+closeScript;
+      const cloudTag='<scr'+'ipt>window.__XHJ_CLOUD_BUILD="'+version+'";'+cloud+closeScript;
+      const bridge=supabaseTag+cloudTag;
 
       if(!h.includes('</body>'))throw Error('Invalid app shell');
       h=h.replace('</body>',bridge+'</body>');
