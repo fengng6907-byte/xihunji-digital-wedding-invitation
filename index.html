@@ -15,17 +15,26 @@
   <script>
   (async()=>{
     try{
-      const version='20260901-r2';
-      const r=await fetch('./app.html?v='+version,{cache:'no-store'});
-      if(!r.ok)throw Error('app.html '+r.status);
-      let h=await r.text();
+      const version='20260901-r3';
+      const [appRes,cloudRes]=await Promise.all([
+        fetch('./app.html?v='+version,{cache:'no-store'}),
+        fetch('./xihunji-cloud.js?v='+version,{cache:'no-store'})
+      ]);
+      if(!appRes.ok)throw Error('app.html '+appRes.status);
+      if(!cloudRes.ok)throw Error('xihunji-cloud.js '+cloudRes.status);
 
-      // The legacy standalone app validates guest links against browser-local data.
-      // Disable that first boot so the Supabase router can validate the shared token instead.
-      h=h.replace('renderNav();\nbootInvitationRoute();','renderNav();');
+      let h=await appRes.text();
+      let cloud=await cloudRes.text();
 
-      const bridge='<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>'+
-        '<script src="./xihunji-cloud.js?v='+version+'"><\/script>';
+      // Shared invitation links must be validated by Supabase, not localStorage.
+      h=h.replace(/renderNav\(\);\s*bootInvitationRoute\(\);\s*<\/script>/,'renderNav();\n</script>');
+
+      // Inline the cloud bridge so browser/cache/script-order issues cannot skip it.
+      cloud=cloud.replace(/<\/script/gi,'<\\/script');
+      const bridge='<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\\/script>'+
+        '<script>window.__XHJ_CLOUD_BUILD="'+version+'";'+cloud+'<\\/script>';
+
+      if(!h.includes('</body>'))throw Error('Invalid app shell');
       h=h.replace('</body>',bridge+'</body>');
 
       document.open();
