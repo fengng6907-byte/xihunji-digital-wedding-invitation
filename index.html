@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>喜婚记 XiHunJi</title>
   <style>
-    html,body{height:100%;margin:0;background:#f8f5f0}
+    html,body{height:100%;margin:0;background:#f5f1ea}
     .xhj-load{height:100%;display:grid;place-items:center;font-family:system-ui;color:#786f69}
-    .xhj-load b{display:block;text-align:center;font-family:serif;font-size:28px;color:#a81c20;margin-bottom:8px}
+    .xhj-load b{display:block;text-align:center;font-family:serif;font-size:28px;color:#8f1e1e;margin-bottom:8px}
   </style>
 </head>
 <body>
@@ -15,19 +15,25 @@
   <script>
   (async()=>{
     try{
-      const version='20260901-r5';
-      const [appRes,cloudRes,publishFixRes]=await Promise.all([
+      const version='20260901-r6';
+      const [appRes,cloudRes,publishFixRes,designCssRes,designJsRes]=await Promise.all([
         fetch('./app.html?v='+version,{cache:'no-store'}),
         fetch('./xihunji-cloud.js?v='+version,{cache:'no-store'}),
-        fetch('./xihunji-publish-fix.js?v='+version,{cache:'no-store'})
+        fetch('./xihunji-publish-fix.js?v='+version,{cache:'no-store'}),
+        fetch('./xihunji-design-v2.css?v='+version,{cache:'no-store'}),
+        fetch('./xihunji-design-v2.js?v='+version,{cache:'no-store'})
       ]);
       if(!appRes.ok)throw Error('app.html '+appRes.status);
       if(!cloudRes.ok)throw Error('xihunji-cloud.js '+cloudRes.status);
       if(!publishFixRes.ok)throw Error('xihunji-publish-fix.js '+publishFixRes.status);
+      if(!designCssRes.ok)throw Error('xihunji-design-v2.css '+designCssRes.status);
+      if(!designJsRes.ok)throw Error('xihunji-design-v2.js '+designJsRes.status);
 
       let h=await appRes.text();
       const cloud=await cloudRes.text();
       const publishFix=await publishFixRes.text();
+      const designCss=await designCssRes.text();
+      const designJs=await designJsRes.text();
 
       h=h.replace('renderNav();\nbootInvitationRoute();','renderNav();');
       h=h.replace('renderNav();\r\nbootInvitationRoute();','renderNav();');
@@ -36,7 +42,9 @@
       const supabaseTag='<scr'+'ipt src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">'+closeScript;
       const cloudTag='<scr'+'ipt>window.__XHJ_CLOUD_BUILD="'+version+'";'+cloud+closeScript;
       const publishTag='<scr'+'ipt>'+publishFix+closeScript;
-      const bridge=supabaseTag+cloudTag+publishTag;
+      const designTag='<scr'+'ipt>'+designJs+closeScript;
+      const styleTag='<style>'+designCss+'</style>';
+      const bridge=styleTag+supabaseTag+cloudTag+publishTag+designTag;
 
       if(!h.includes('</body>'))throw Error('Invalid app shell');
       h=h.replace('</body>',bridge+'</body>');
