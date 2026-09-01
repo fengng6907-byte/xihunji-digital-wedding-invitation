@@ -15,27 +15,28 @@
   <script>
   (async()=>{
     try{
-      const version='20260901-r4';
-      const [appRes,cloudRes]=await Promise.all([
+      const version='20260901-r5';
+      const [appRes,cloudRes,publishFixRes]=await Promise.all([
         fetch('./app.html?v='+version,{cache:'no-store'}),
-        fetch('./xihunji-cloud.js?v='+version,{cache:'no-store'})
+        fetch('./xihunji-cloud.js?v='+version,{cache:'no-store'}),
+        fetch('./xihunji-publish-fix.js?v='+version,{cache:'no-store'})
       ]);
       if(!appRes.ok)throw Error('app.html '+appRes.status);
       if(!cloudRes.ok)throw Error('xihunji-cloud.js '+cloudRes.status);
+      if(!publishFixRes.ok)throw Error('xihunji-publish-fix.js '+publishFixRes.status);
 
       let h=await appRes.text();
       const cloud=await cloudRes.text();
+      const publishFix=await publishFixRes.text();
 
-      // Disable the old localStorage-only guest-route boot.
       h=h.replace('renderNav();\nbootInvitationRoute();','renderNav();');
       h=h.replace('renderNav();\r\nbootInvitationRoute();','renderNav();');
 
-      // Build script tags in pieces so the loader source itself never contains
-      // a literal closing-script sequence that could terminate this script early.
       const closeScript='</scr'+'ipt>';
       const supabaseTag='<scr'+'ipt src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">'+closeScript;
       const cloudTag='<scr'+'ipt>window.__XHJ_CLOUD_BUILD="'+version+'";'+cloud+closeScript;
-      const bridge=supabaseTag+cloudTag;
+      const publishTag='<scr'+'ipt>'+publishFix+closeScript;
+      const bridge=supabaseTag+cloudTag+publishTag;
 
       if(!h.includes('</body>'))throw Error('Invalid app shell');
       h=h.replace('</body>',bridge+'</body>');
