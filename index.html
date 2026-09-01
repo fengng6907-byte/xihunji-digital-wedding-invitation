@@ -1,1 +1,41 @@
-<!doctype html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>喜婚记 XiHunJi</title><style>html,body{height:100%;margin:0;background:#f8f5f0}.xhj-load{height:100%;display:grid;place-items:center;font-family:system-ui;color:#786f69}.xhj-load b{display:block;text-align:center;font-family:serif;font-size:28px;color:#a81c20;margin-bottom:8px}</style></head><body><div class="xhj-load"><div><b>囍 · 喜婚记</b>正在载入婚礼工作台…</div></div><script>(async()=>{try{const r=await fetch('./app.html',{cache:'no-cache'});if(!r.ok)throw Error('app.html '+r.status);let h=await r.text();const b='<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script><script src="./xihunji-cloud.js"><\/script>';h=h.replace('</body>',b+'</body>');document.open();document.write(h);document.close()}catch(e){console.error(e);document.body.innerHTML='<div class="xhj-load"><div><b>囍 · 喜婚记</b>载入失败，请刷新重试。</div></div>'}})();</script></body></html>
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>喜婚记 XiHunJi</title>
+  <style>
+    html,body{height:100%;margin:0;background:#f8f5f0}
+    .xhj-load{height:100%;display:grid;place-items:center;font-family:system-ui;color:#786f69}
+    .xhj-load b{display:block;text-align:center;font-family:serif;font-size:28px;color:#a81c20;margin-bottom:8px}
+  </style>
+</head>
+<body>
+  <div class="xhj-load"><div><b>囍 · 喜婚记</b>正在载入婚礼工作台…</div></div>
+  <script>
+  (async()=>{
+    try{
+      const version='20260901-r2';
+      const r=await fetch('./app.html?v='+version,{cache:'no-store'});
+      if(!r.ok)throw Error('app.html '+r.status);
+      let h=await r.text();
+
+      // The legacy standalone app validates guest links against browser-local data.
+      // Disable that first boot so the Supabase router can validate the shared token instead.
+      h=h.replace('renderNav();\nbootInvitationRoute();','renderNav();');
+
+      const bridge='<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>'+
+        '<script src="./xihunji-cloud.js?v='+version+'"><\/script>';
+      h=h.replace('</body>',bridge+'</body>');
+
+      document.open();
+      document.write(h);
+      document.close();
+    }catch(e){
+      console.error('[XiHunJi boot]',e);
+      document.body.innerHTML='<div class="xhj-load"><div><b>囍 · 喜婚记</b>载入失败，请刷新页面重试。<br><small style="display:block;margin-top:8px">'+String(e.message||e)+'</small></div></div>';
+    }
+  })();
+  </script>
+</body>
+</html>
