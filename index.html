@@ -15,25 +15,31 @@
   <script>
   (async()=>{
     try{
-      const version='20260901-r6';
-      const [appRes,cloudRes,publishFixRes,designCssRes,designJsRes]=await Promise.all([
+      const version='20260908-party-r1';
+      const [appRes,cloudRes,publishFixRes,designCssRes,designJsRes,partyCssRes,partyJsRes]=await Promise.all([
         fetch('./app.html?v='+version,{cache:'no-store'}),
         fetch('./xihunji-cloud.js?v='+version,{cache:'no-store'}),
         fetch('./xihunji-publish-fix.js?v='+version,{cache:'no-store'}),
         fetch('./xihunji-design-v2.css?v='+version,{cache:'no-store'}),
-        fetch('./xihunji-design-v2.js?v='+version,{cache:'no-store'})
+        fetch('./xihunji-design-v2.js?v='+version,{cache:'no-store'}),
+        fetch('./xihunji-bridal-party.css?v='+version,{cache:'no-store'}),
+        fetch('./xihunji-bridal-party.js?v='+version,{cache:'no-store'})
       ]);
       if(!appRes.ok)throw Error('app.html '+appRes.status);
       if(!cloudRes.ok)throw Error('xihunji-cloud.js '+cloudRes.status);
       if(!publishFixRes.ok)throw Error('xihunji-publish-fix.js '+publishFixRes.status);
       if(!designCssRes.ok)throw Error('xihunji-design-v2.css '+designCssRes.status);
       if(!designJsRes.ok)throw Error('xihunji-design-v2.js '+designJsRes.status);
+      if(!partyCssRes.ok)throw Error('xihunji-bridal-party.css '+partyCssRes.status);
+      if(!partyJsRes.ok)throw Error('xihunji-bridal-party.js '+partyJsRes.status);
 
       let h=await appRes.text();
       const cloud=await cloudRes.text();
       const publishFix=await publishFixRes.text();
       const designCss=await designCssRes.text();
       const designJs=await designJsRes.text();
+      const partyCss=await partyCssRes.text();
+      const partyJs=await partyJsRes.text();
 
       h=h.replace('renderNav();\nbootInvitationRoute();','renderNav();');
       h=h.replace('renderNav();\r\nbootInvitationRoute();','renderNav();');
@@ -43,8 +49,9 @@
       const cloudTag='<scr'+'ipt>window.__XHJ_CLOUD_BUILD="'+version+'";'+cloud+closeScript;
       const publishTag='<scr'+'ipt>'+publishFix+closeScript;
       const designTag='<scr'+'ipt>'+designJs+closeScript;
-      const styleTag='<style>'+designCss+'</style>';
-      const bridge=styleTag+supabaseTag+cloudTag+publishTag+designTag;
+      const partyTag='<scr'+'ipt>'+partyJs+closeScript;
+      const styleTag='<style>'+designCss+'\n'+partyCss+'</style>';
+      const bridge=styleTag+supabaseTag+cloudTag+publishTag+designTag+partyTag;
 
       if(!h.includes('</body>'))throw Error('Invalid app shell');
       h=h.replace('</body>',bridge+'</body>');
