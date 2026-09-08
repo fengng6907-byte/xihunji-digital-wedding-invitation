@@ -15,8 +15,8 @@
   <script>
   (async()=>{
     try{
-      const version='20260908-pair-r1';
-      const [appRes,cloudRes,publishFixRes,designCssRes,designJsRes,partyCssRes,partyJsRes,pairJsRes]=await Promise.all([
+      const version='20260908-auth-r1';
+      const [appRes,cloudRes,publishFixRes,designCssRes,designJsRes,partyCssRes,partyJsRes,pairJsRes,authCssRes,authJsRes]=await Promise.all([
         fetch('./app.html?v='+version,{cache:'no-store'}),
         fetch('./xihunji-cloud.js?v='+version,{cache:'no-store'}),
         fetch('./xihunji-publish-fix.js?v='+version,{cache:'no-store'}),
@@ -24,7 +24,9 @@
         fetch('./xihunji-design-v2.js?v='+version,{cache:'no-store'}),
         fetch('./xihunji-bridal-party.css?v='+version,{cache:'no-store'}),
         fetch('./xihunji-bridal-party.js?v='+version,{cache:'no-store'}),
-        fetch('./xihunji-couple-pairing.js?v='+version,{cache:'no-store'})
+        fetch('./xihunji-couple-pairing.js?v='+version,{cache:'no-store'}),
+        fetch('./xihunji-auth-gate.css?v='+version,{cache:'no-store'}),
+        fetch('./xihunji-auth-gate.js?v='+version,{cache:'no-store'})
       ]);
       if(!appRes.ok)throw Error('app.html '+appRes.status);
       if(!cloudRes.ok)throw Error('xihunji-cloud.js '+cloudRes.status);
@@ -34,6 +36,8 @@
       if(!partyCssRes.ok)throw Error('xihunji-bridal-party.css '+partyCssRes.status);
       if(!partyJsRes.ok)throw Error('xihunji-bridal-party.js '+partyJsRes.status);
       if(!pairJsRes.ok)throw Error('xihunji-couple-pairing.js '+pairJsRes.status);
+      if(!authCssRes.ok)throw Error('xihunji-auth-gate.css '+authCssRes.status);
+      if(!authJsRes.ok)throw Error('xihunji-auth-gate.js '+authJsRes.status);
 
       let h=await appRes.text();
       const cloud=await cloudRes.text();
@@ -43,6 +47,8 @@
       const partyCss=await partyCssRes.text();
       const partyJs=await partyJsRes.text();
       const pairJs=await pairJsRes.text();
+      const authCss=await authCssRes.text();
+      const authJs=await authJsRes.text();
 
       h=h.replace('renderNav();\nbootInvitationRoute();','renderNav();');
       h=h.replace('renderNav();\r\nbootInvitationRoute();','renderNav();');
@@ -54,8 +60,9 @@
       const designTag='<scr'+'ipt>'+designJs+closeScript;
       const partyTag='<scr'+'ipt>'+partyJs+closeScript;
       const pairTag='<scr'+'ipt>'+pairJs+closeScript;
-      const styleTag='<style>'+designCss+'\n'+partyCss+'\n.xhj-pair-code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:34px;letter-spacing:.16em;margin:16px 0;color:var(--red)}.xhj-pair-join{display:grid;grid-template-columns:1fr auto;gap:8px}.xhj-pair-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.xhj-pair-head h3,.xhj-pair-card h3{margin-bottom:6px}@media(max-width:680px){.xhj-pair-join{grid-template-columns:1fr}.xhj-pair-code{font-size:28px}}'+'</style>';
-      const bridge=styleTag+supabaseTag+cloudTag+publishTag+designTag+partyTag+pairTag;
+      const authTag='<scr'+'ipt>'+authJs+closeScript;
+      const styleTag='<style>'+designCss+'\n'+partyCss+'\n'+authCss+'\n.xhj-pair-code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:34px;letter-spacing:.16em;margin:16px 0;color:var(--red)}.xhj-pair-join{display:grid;grid-template-columns:1fr auto;gap:8px}.xhj-pair-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.xhj-pair-head h3,.xhj-pair-card h3{margin-bottom:6px}@media(max-width:680px){.xhj-pair-join{grid-template-columns:1fr}.xhj-pair-code{font-size:28px}}'+'</style>';
+      const bridge=styleTag+supabaseTag+cloudTag+publishTag+designTag+partyTag+pairTag+authTag;
 
       if(!h.includes('</body>'))throw Error('Invalid app shell');
       h=h.replace('</body>',bridge+'</body>');
