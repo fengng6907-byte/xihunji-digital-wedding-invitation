@@ -15,7 +15,7 @@
   <script>
   (async()=>{
     try{
-      const version='20260908-auth-r1';
+      const version='20260908-auth-r2';
       const [appRes,cloudRes,publishFixRes,designCssRes,designJsRes,partyCssRes,partyJsRes,pairJsRes,authCssRes,authJsRes]=await Promise.all([
         fetch('./app.html?v='+version,{cache:'no-store'}),
         fetch('./xihunji-cloud.js?v='+version,{cache:'no-store'}),
