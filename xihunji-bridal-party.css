@@ -1,0 +1,36 @@
+/* XiHunJi Bridal Party */
+.party-summary{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:26px}
+.party-summary>div{padding:18px 20px;border-right:1px solid var(--line)}.party-summary>div:last-child{border-right:0}
+.party-summary small{display:block;font-size:10px;letter-spacing:.08em;color:var(--muted);margin-bottom:6px}.party-summary strong{font-family:var(--serif);font-size:28px;font-weight:500}
+.party-layout{display:grid;grid-template-columns:340px minmax(0,1fr);gap:24px;align-items:start}
+.party-panel{background:#fff;border:1px solid var(--line);padding:22px}.party-panel h2{font-family:var(--serif);font-size:18px;font-weight:500;margin:0 0 16px}
+.party-form{display:grid;gap:11px}.party-form.two{grid-template-columns:1fr 1fr}.party-form .span-2{grid-column:1/-1}
+.party-member-list{display:grid;gap:0;border-top:1px solid var(--line)}
+.party-member{display:grid;grid-template-columns:1fr auto;gap:12px;padding:16px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.party-member.active .party-member-name{color:var(--red)}.party-member-name{font-family:var(--serif);font-size:15px}.party-member-meta{font-size:10px;color:var(--muted);margin-top:4px}.party-progress{font-size:11px;color:var(--muted);white-space:nowrap}
+.party-empty{padding:42px 8px;text-align:center;color:var(--muted);font-size:12px;line-height:1.8}
+.party-detail-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:20px}
+.party-detail-head h2{font-family:var(--serif);font-size:27px;font-weight:500;margin:2px 0 5px}.party-detail-head p{margin:0;font-size:11px;color:var(--muted)}
+.party-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.party-task-add{display:grid;grid-template-columns:1.2fr .75fr .8fr auto;gap:8px;padding:16px 0 20px;border-bottom:1px solid var(--line)}
+.party-task-list{display:grid}.party-task-row{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:12px;padding:17px 0;border-bottom:1px solid var(--line);align-items:start}
+.party-task-check{width:22px;height:22px;border:1px solid #cfc5bc;background:white;border-radius:50%;display:grid;place-items:center;color:white;margin-top:1px}.party-task-row.done .party-task-check{background:var(--red);border-color:var(--red)}.party-task-row.done .party-task-title{text-decoration:line-through;color:#9d948e}
+.party-task-title{font-family:var(--serif);font-size:14px}.party-task-meta{font-size:10px;color:var(--muted);line-height:1.7;margin-top:4px}.party-task-desc{font-size:11px;color:#665f59;line-height:1.7;margin-top:5px}
+
+/* Public bridal-party portal */
+.party-portal{position:fixed;inset:0;z-index:600;background:#f5f0e8;overflow:auto;color:#211d1a}
+.party-portal-shell{width:min(700px,calc(100% - 28px));margin:auto;padding:54px 0 80px}
+.party-portal-mark{text-align:center;font-family:var(--serif);color:var(--red);font-size:23px;letter-spacing:.15em}
+.party-portal-kicker{text-align:center;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:#92867d;margin-top:28px}
+.party-portal-name{text-align:center;font-family:var(--serif);font-size:clamp(38px,9vw,62px);font-weight:500;margin:8px 0 5px}
+.party-portal-role{text-align:center;color:var(--red);font-family:var(--serif);font-size:14px}
+.party-wedding-line{text-align:center;font-size:11px;line-height:1.9;color:#766d66;margin:23px auto 38px;max-width:480px}
+.party-portal-intro{border-top:1px solid #dcd2c8;border-bottom:1px solid #dcd2c8;padding:24px 0;margin-bottom:34px;font-family:var(--serif);text-align:center;line-height:2;color:#625a54;font-size:13px}
+.party-portal-heading{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:0 0 10px}.party-portal-heading h2{font-family:var(--serif);font-size:24px;font-weight:500;margin:0}.party-portal-heading span{font-size:10px;color:#8c8179}
+.party-public-task{display:grid;grid-template-columns:32px 1fr;gap:14px;padding:20px 0;border-top:1px solid #ddd3ca;cursor:pointer}.party-public-task:last-child{border-bottom:1px solid #ddd3ca}
+.party-public-check{width:26px;height:26px;border-radius:50%;border:1px solid #c9bdb3;background:#faf7f2;display:grid;place-items:center;color:white}.party-public-task.done .party-public-check{background:var(--red);border-color:var(--red)}.party-public-task.done .party-public-title{text-decoration:line-through;color:#958c85}
+.party-public-title{font-family:var(--serif);font-size:16px}.party-public-meta{font-size:10px;color:#8d837c;margin-top:6px;line-height:1.7}.party-public-desc{font-size:12px;color:#645d57;line-height:1.8;margin-top:7px}
+.party-portal-footer{text-align:center;padding-top:45px;color:#a0968e;font-size:9px;letter-spacing:.09em}
+
+@media(max-width:900px){.party-layout{grid-template-columns:1fr}.party-summary{grid-template-columns:1fr 1fr 1fr}.party-panel{padding:18px}.party-task-add{grid-template-columns:1fr 1fr}.party-task-add .btn{grid-column:span 2}}
+@media(max-width:680px){.party-summary>div{padding:14px 11px}.party-summary strong{font-size:23px}.party-detail-head{display:block}.party-actions{justify-content:flex-start;margin-top:13px}.party-form.two,.party-task-add{grid-template-columns:1fr}.party-form .span-2,.party-task-add .btn{grid-column:auto}.party-portal-shell{padding-top:38px}.party-public-task{padding:18px 0}}
